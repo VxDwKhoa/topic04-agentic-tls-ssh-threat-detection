@@ -1,0 +1,361 @@
+{
+  "dataset": "NF-UQ-NIDS-v2 (Topic 04 Preprocessed & Multi-Model Split)",
+  "generated_at": "2026-11-19T17:06:00Z",
+  "feature_columns_L3_L4": [
+    "src_port_class",
+    "dst_port",
+    "proto",
+    "in_bytes",
+    "in_pkts",
+    "out_bytes",
+    "out_pkts",
+    "tcp_flags",
+    "client_tcp_flags",
+    "server_tcp_flags",
+    "flow_duration_ms",
+    "duration_in",
+    "duration_out",
+    "min_ttl",
+    "max_ttl",
+    "longest_flow_pkt",
+    "shortest_flow_pkt",
+    "min_ip_pkt_len",
+    "max_ip_pkt_len",
+    "src_to_dst_second_bytes",
+    "dst_to_src_second_bytes",
+    "retransmitted_in_bytes",
+    "retransmitted_in_pkts",
+    "retransmitted_out_bytes",
+    "retransmitted_out_pkts",
+    "src_to_dst_avg_throughput",
+    "dst_to_src_avg_throughput",
+    "num_pkts_up_to_128_bytes",
+    "num_pkts_128_to_256_bytes",
+    "num_pkts_256_to_512_bytes",
+    "num_pkts_512_to_1024_bytes",
+    "num_pkts_1024_to_1514_bytes",
+    "tcp_win_max_in",
+    "tcp_win_max_out",
+    "icmp_type",
+    "icmp_ipv4_type",
+    "is_tls_port",
+    "is_ssh_port",
+    "bytes_ratio",
+    "pkts_ratio"
+  ],
+  "num_features": 40,
+  "dropped_L7_columns": [
+    "L7_PROTO",
+    "DNS_QUERY_ID",
+    "DNS_QUERY_TYPE",
+    "DNS_TTL_ANSWER",
+    "FTP_COMMAND_RET_CODE"
+  ],
+  "pseudonymization": "HMAC-SHA256 (16-hex prefix) on IPV4_SRC_ADDR and IPV4_DST_ADDR",
+  "split_summary": {
+    "total_rows": 652109,
+    "train_rows": 425771,
+    "val_rows": 91230,
+    "test_rows": 135108,
+    "unseen_attack_holdout_rows": 635,
+    "unseen_attack_families": [
+      "Ransomware",
+      "Shellcode",
+      "Worms"
+    ],
+    "num_holdout_hosts_in_test": 183,
+    "train_class_distribution": {
+      "Benign": 104351,
+      "xss": 31499,
+      "scanning": 31499,
+      "DDoS": 31499,
+      "DoS": 31495,
+      "Brute Force": 31492,
+      "Reconnaissance": 31430,
+      "Infilteration": 30977,
+      "Bot": 28099,
+      "password": 26874,
+      "injection": 24619,
+      "Exploits": 6337,
+      "Backdoor": 4957,
+      "Fuzzers": 4490,
+      "Generic": 3051,
+      "mitm": 2096,
+      "Analysis": 408,
+      "ransomware": 400,
+      "Theft": 198
+    },
+    "val_class_distribution": {
+      "Benign": 22361,
+      "xss": 6750,
+      "scanning": 6750,
+      "DDoS": 6750,
+      "DoS": 6748,
+      "Brute Force": 6748,
+      "Reconnaissance": 6735,
+      "Infilteration": 6637,
+      "Bot": 6021,
+      "password": 5758,
+      "injection": 5275,
+      "Exploits": 1357,
+      "Backdoor": 1062,
+      "Fuzzers": 962,
+      "Generic": 653,
+      "mitm": 449,
+      "Analysis": 87,
+      "ransomware": 85,
+      "Theft": 42
+    },
+    "test_class_distribution": {
+      "Benign": 33288,
+      "injection": 15106,
+      "password": 12368,
+      "Bot": 10880,
+      "Infilteration": 7386,
+      "Reconnaissance": 6835,
+      "Brute Force": 6760,
+      "DoS": 6757,
+      "DDoS": 6751,
+      "scanning": 6751,
+      "xss": 6751,
+      "Exploits": 4786,
+      "Fuzzers": 3428,
+      "Generic": 2725,
+      "Backdoor": 1492,
+      "ransomware": 869,
+      "Theft": 689,
+      "Shellcode": 562,
+      "mitm": 450,
+      "Analysis": 401,
+      "Worms": 73
+    }
+  },
+  "privacy_audit": {
+    "dataset_name": "NF-UQ-NIDS-v2_Preprocessed",
+    "passed_no_l7_audit": true,
+    "num_rows_checked": 652109,
+    "num_columns_checked": 51,
+    "columns": [
+      "session_id",
+      "flow_order_id",
+      "window_id",
+      "src_host_token",
+      "dst_host_token",
+      "src_port_class",
+      "dst_port",
+      "proto",
+      "in_bytes",
+      "in_pkts",
+      "out_bytes",
+      "out_pkts",
+      "tcp_flags",
+      "client_tcp_flags",
+      "server_tcp_flags",
+      "flow_duration_ms",
+      "duration_in",
+      "duration_out",
+      "min_ttl",
+      "max_ttl",
+      "longest_flow_pkt",
+      "shortest_flow_pkt",
+      "min_ip_pkt_len",
+      "max_ip_pkt_len",
+      "src_to_dst_second_bytes",
+      "dst_to_src_second_bytes",
+      "retransmitted_in_bytes",
+      "retransmitted_in_pkts",
+      "retransmitted_out_bytes",
+      "retransmitted_out_pkts",
+      "src_to_dst_avg_throughput",
+      "dst_to_src_avg_throughput",
+      "num_pkts_up_to_128_bytes",
+      "num_pkts_128_to_256_bytes",
+      "num_pkts_256_to_512_bytes",
+      "num_pkts_512_to_1024_bytes",
+      "num_pkts_1024_to_1514_bytes",
+      "tcp_win_max_in",
+      "tcp_win_max_out",
+      "icmp_type",
+      "icmp_ipv4_type",
+      "is_tls_port",
+      "is_ssh_port",
+      "bytes_ratio",
+      "pkts_ratio",
+      "label",
+      "attack_family",
+      "attack_label",
+      "attack_layers",
+      "attack_mapping",
+      "ground_truth_source"
+    ],
+    "violations": [],
+    "compliance_anchors": [
+      "SR-01",
+      "CR-06",
+      "Section 13.4 Step 7",
+      "Section 14"
+    ]
+  },
+  "train_scaler_stats": {
+    "src_port_class": {
+      "mean": 1.5512000582472738,
+      "std": 0.5722124153166976
+    },
+    "dst_port": {
+      "mean": 3635.8998663600855,
+      "std": 10876.875137414145
+    },
+    "proto": {
+      "mean": 7.498627196309753,
+      "std": 8.726414829423076
+    },
+    "in_bytes": {
+      "mean": 2256.0104821605983,
+      "std": 134031.89033357182
+    },
+    "in_pkts": {
+      "mean": 13.192429733354315,
+      "std": 435.8042355963525
+    },
+    "out_bytes": {
+      "mean": 12351.54274715751,
+      "std": 774495.8496531197
+    },
+    "out_pkts": {
+      "mean": 15.799676351841718,
+      "std": 450.9439844973224
+    },
+    "tcp_flags": {
+      "mean": 58.8600280432439,
+      "std": 82.43663293955223
+    },
+    "client_tcp_flags": {
+      "mean": 56.17880268970879,
+      "std": 83.52789247610616
+    },
+    "server_tcp_flags": {
+      "mean": 18.962444600501208,
+      "std": 14.455323227473453
+    },
+    "flow_duration_ms": {
+      "mean": 1445659.8812718573,
+      "std": 2029373.4238412608
+    },
+    "duration_in": {
+      "mean": 180.48975857914232,
+      "std": 502.00325339688214
+    },
+    "duration_out": {
+      "mean": 65.6194198289691,
+      "std": 241.12739995608231
+    },
+    "min_ttl": {
+      "mean": 72.63932724398796,
+      "std": 54.03370533806216
+    },
+    "max_ttl": {
+      "mean": 72.68487285418688,
+      "std": 54.0677229231632
+    },
+    "longest_flow_pkt": {
+      "mean": 601.68614349028,
+      "std": 644.6659255336588
+    },
+    "shortest_flow_pkt": {
+      "mean": 54.27200537378074,
+      "std": 40.116144428833834
+    },
+    "min_ip_pkt_len": {
+      "mean": 39.43647641572583,
+      "std": 19.46768663411589
+    },
+    "max_ip_pkt_len": {
+      "mean": 601.68614349028,
+      "std": 644.6659255336588
+    },
+    "src_to_dst_second_bytes": {
+      "mean": Infinity,
+      "std": 1.0
+    },
+    "dst_to_src_second_bytes": {
+      "mean": Infinity,
+      "std": 1.0
+    },
+    "retransmitted_in_bytes": {
+      "mean": 456.0116259679499,
+      "std": 42562.11256825223
+    },
+    "retransmitted_in_pkts": {
+      "mean": 1.3114420662750634,
+      "std": 32.58261327395732
+    },
+    "retransmitted_out_bytes": {
+      "mean": 433.0447400128238,
+      "std": 14023.227302945503
+    },
+    "retransmitted_out_pkts": {
+      "mean": 0.8992909333890754,
+      "std": 11.526955442691595
+    },
+    "src_to_dst_avg_throughput": {
+      "mean": 7200571.5,
+      "std": 41033208.0
+    },
+    "dst_to_src_avg_throughput": {
+      "mean": 22330866.0,
+      "std": 130701272.0
+    },
+    "num_pkts_up_to_128_bytes": {
+      "mean": 18.10739810837281,
+      "std": 441.42556849628636
+    },
+    "num_pkts_128_to_256_bytes": {
+      "mean": 1.9395590587428453,
+      "std": 7.911855671153348
+    },
+    "num_pkts_256_to_512_bytes": {
+      "mean": 1.240096201948935,
+      "std": 9.136293571219522
+    },
+    "num_pkts_512_to_1024_bytes": {
+      "mean": 0.7418941167904812,
+      "std": 6.997361208992992
+    },
+    "num_pkts_1024_to_1514_bytes": {
+      "mean": 7.248990654600712,
+      "std": 443.8175700560022
+    },
+    "tcp_win_max_in": {
+      "mean": 14273.231345018801,
+      "std": 14782.240376677766
+    },
+    "tcp_win_max_out": {
+      "mean": 20270.520902081167,
+      "std": 18618.723325099145
+    },
+    "icmp_type": {
+      "mean": 4757.251799676352,
+      "std": 13855.073339774297
+    },
+    "icmp_ipv4_type": {
+      "mean": 18.582855572596536,
+      "std": 54.12105649745076
+    },
+    "is_tls_port": {
+      "mean": 0.372742624556393,
+      "std": 0.48353501375911795
+    },
+    "is_ssh_port": {
+      "mean": 0.07170521242639823,
+      "std": 0.25799947921306726
+    },
+    "bytes_ratio": {
+      "mean": 53.72307586669922,
+      "std": 3004.41455078125
+    },
+    "pkts_ratio": {
+      "mean": 1.5400667190551758,
+      "std": 15.493102073669434
+    }
+  }
+}
