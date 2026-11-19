@@ -1,66 +1,99 @@
 {
-  "description": "Topic 04 Metadata-Only Allowlist and Denylist Schema (Enforcing No-L7 Payload)",
+  "schema_version": "1.0.0",
+  "project": "Topic 04 — Agentic ML/DL for Metadata-Only TLS/SSH Threat Detection, Hunting & Response",
+  "policy": "STRICT_NO_RAW_L7_PAYLOAD",
+  "description": "Explicit telemetry allowlist and denylist adhering to Section 14 (Recommended Dataset Schema) and Phase 1/Phase 4 (SR-01) requirements.",
   "allowlist": {
-    "L3_L4_flow": [
-      "ts",
-      "uid",
-      "id.orig_h",
-      "id.orig_p",
-      "id.resp_h",
-      "id.resp_p",
+    "session_and_identity": [
+      "session_id",
+      "ts_start",
+      "window_id",
+      "src_host_token",
+      "dst_host_token",
+      "src_role",
+      "dst_role"
+    ],
+    "L3_L4_network_transport": [
       "proto",
-      "duration",
-      "orig_bytes",
-      "resp_bytes",
+      "src_port_class",
+      "dst_port",
       "conn_state",
+      "duration",
       "orig_pkts",
       "resp_pkts",
-      "pkt_lengths",
-      "pkt_iat"
+      "orig_bytes",
+      "resp_bytes",
+      "tcp_flag_vector",
+      "iat_mean",
+      "iat_std",
+      "pkt_size_seq_hash_or_vector"
     ],
-    "L5_L6_tls": [
-      "version",
-      "cipher",
-      "curve",
-      "resumed",
-      "established",
+    "L5_L6_tls_handshake": [
+      "security_proto",
+      "tls_version",
+      "tls_cipher_class",
+      "tls_group_class",
+      "tls_sigalg_class",
+      "extension_vector",
       "ja4",
-      "ja3",
-      "ech_present",
-      "alpn_count"
+      "ja3_optional",
+      "ech_observed",
+      "session_resumed",
+      "handshake_status"
     ],
-    "L5_L6_x509": [
+    "L5_L6_x509_certificate": [
+      "cert_spki_token",
+      "cert_issuer_class",
       "cert_chain_len",
-      "is_self_signed",
-      "validity_days",
-      "issuer_class",
-      "key_alg",
-      "key_length",
-      "sig_alg"
+      "cert_key_type",
+      "cert_key_bits",
+      "cert_sigalg",
+      "cert_validity_days",
+      "cert_status",
+      "cert_san_count"
     ],
-    "L5_L6_ssh": [
-      "version",
-      "auth_success",
-      "auth_attempts",
-      "kex_alg",
-      "cipher_alg",
-      "mac_alg",
-      "host_key_alg",
-      "hassh",
-      "ja4ssh"
+    "L5_L6_ssh_handshake": [
+      "ssh_proto_version",
+      "ssh_software_family",
+      "ssh_kex_class",
+      "ssh_cipher_class",
+      "ssh_mac_class",
+      "hassh_or_ja4ssh"
+    ],
+    "behavioral_and_graph_context": [
+      "baseline_fp_prevalence",
+      "new_edge_score",
+      "session_rate_5m",
+      "fanout_5m"
+    ],
+    "ground_truth_and_labels": [
+      "scenario_id",
+      "attack_family",
+      "attack_label",
+      "attack_layers",
+      "attack_mapping",
+      "ground_truth_source"
     ]
+  },
+  "tokenization_and_privacy_rules": {
+    "sni_and_san": "Raw SNI/SAN must be dropped or tokenized (HMAC) before producing final training artifacts.",
+    "ip_addresses": "Raw internal IPs must be mapped to pseudonymous tokens (src_host_token, dst_host_token) in shared datasets.",
+    "certificates": "Raw certificate blobs are replaced with SPKI tokens and structural metadata."
   },
   "denylist_strict_no_L7": [
     "http_body",
-    "http_uri",
-    "http_headers",
+    "http_request_uri",
+    "http_request_path",
+    "http_headers_raw",
     "http_cookie",
     "http_authorization",
+    "http_user_agent_raw",
     "ssh_commands",
-    "ssh_keystrokes",
-    "decrypted_payload",
-    "session_secrets",
+    "ssh_terminal_keystrokes",
+    "ssh_auth_password",
+    "decrypted_tls_payload",
+    "tls_session_keys",
     "private_keys",
-    "raw_pcap_payload"
+    "raw_pcap_payload_bytes"
   ]
 }
