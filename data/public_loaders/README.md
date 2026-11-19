@@ -9,7 +9,7 @@ Tài liệu này mô tả quy trình **Tiền xử lý (Preprocessing)**, **Ẩn
 Do bộ dữ liệu sau khi chia có dung lượng **~93.43 MB** (`652,109` bản ghi ở định dạng nén `Parquet`), để giữ cho GitHub Repository gọn nhẹ, toàn bộ thư mục **`NF-UQ-NIDS-v2/`** được lưu trữ trên Google Drive của nhóm:
 
 > 📁 **Google Drive Dataset Link (`NF-UQ-NIDS-v2/` — 93.43 MB):**  
-> 👉 **[DÁN_LINK_GOOGLE_DRIVE_CỦA_BẠN_VÀO_ĐÂY](https://drive.google.com/)**
+> 👉 **[Tải bộ dữ liệu NF-UQ-NIDS-v2 đã tiền xử lý tại Google Drive](https://drive.google.com/drive/folders/1_rNbPntnbx4kgn4g1lp821sr9clSTst7)**
 
 *(Trong repository này cũng đã đính kèm sẵn một bản mẫu **`sample_data/nfuq_sample_1500.parquet`** gồm 1,500 dòng và biên bản kiểm định **`sample_data/nfuq_manifest_and_audit.json`** để giảng viên hoặc CI/CD runner có thể chạy kiểm thử ngay lập tức mà không cần tải full dataset).*
 
