@@ -1,0 +1,109 @@
+{
+  "policy_version": "1.0.0",
+  "project": "Topic 04 — Agentic ML/DL for Metadata-Only TLS/SSH Threat Detection, Hunting & Response",
+  "default_posture": "DENY_BY_DEFAULT",
+  "core_principle": "High detection AUC does not automatically authorize network blocking. Every action is constrained by confidence, severity, asset criticality, and environment policy (SR-06, SR-07, Section 16).",
+  "tiers": [
+    {
+      "tier_id": "R0",
+      "name": "Observe",
+      "trigger_examples": [
+        "Low anomaly or classifier score",
+        "New client fingerprint (JA4/HASSH) without corroborating malicious flow signals",
+        "Possible benign software upgrade or ECH privacy feature (CR-03)"
+      ],
+      "allowed_actions": [
+        "store_evidence",
+        "enrich_telemetry",
+        "update_baseline_prevalence"
+      ],
+      "network_change_allowed": false,
+      "human_approval_required": false,
+      "auto_expire_minutes": null
+    },
+    {
+      "tier_id": "R1",
+      "name": "Alert / Ticket",
+      "trigger_examples": [
+        "Moderate cryptographic policy anomaly",
+        "Repeated suspicious connection pattern below containment threshold",
+        "Unexpected certificate renewal pending verification"
+      ],
+      "allowed_actions": [
+        "create_incident_ticket",
+        "attach_evidence_graph",
+        "recommend_analyst_checks"
+      ],
+      "network_change_allowed": false,
+      "human_approval_required": false,
+      "auto_expire_minutes": null
+    },
+    {
+      "tier_id": "R2",
+      "name": "Soft Containment",
+      "trigger_examples": [
+        "High-confidence SSH brute-force / connection storm in lab/staging (T1110)",
+        "Bounded L3/L4 scanning burst (T1046)",
+        "High-confidence periodic encrypted beacon in lab environment (T1573)"
+      ],
+      "allowed_actions": [
+        "apply_rate_limit",
+        "increase_session_logging_verbosity",
+        "temp_block_disposable_lab_source"
+      ],
+      "allowed_environments": [
+        "lab",
+        "staging"
+      ],
+      "network_change_allowed": true,
+      "human_approval_required": false,
+      "auto_expire_minutes": 30,
+      "rollback_required": true
+    },
+    {
+      "tier_id": "R3",
+      "name": "Hard Containment Proposal",
+      "trigger_examples": [
+        "Verified AiTM / TLS downgrade with certificate substitution evidence (T1557)",
+        "Confirmed multi-stage malicious C2 sequence over TLS (T1573 + T1071.001)",
+        "Unauthorized SSH lateral movement across internal hosts (T1021.004)"
+      ],
+      "allowed_actions_lab": [
+        "bounded_host_isolation_lab",
+        "block_malicious_destination_lab"
+      ],
+      "allowed_actions_production": [
+        "propose_host_isolation",
+        "propose_firewall_block"
+      ],
+      "network_change_allowed": true,
+      "human_approval_required_in_production": true,
+      "auto_expire_minutes": 60,
+      "rollback_required": true,
+      "retest_after_action": true
+    },
+    {
+      "tier_id": "R4",
+      "name": "Crypto Policy Remediation",
+      "trigger_examples": [
+        "Deprecated TLS version or weak cipher suite negotiated (CR-01 / RFC 9846)",
+        "Weak SSH KEX / cipher / MAC algorithm negotiated (CR-04 / RFC 9142)",
+        "Expired, self-signed, or untrusted X.509 certificate chain on internal service (CR-02 / RFC 5280)"
+      ],
+      "allowed_actions": [
+        "generate_tls_ssh_config_remediation_diff",
+        "run_lab_conformance_retest"
+      ],
+      "automatic_production_merge_allowed": false,
+      "human_approval_required": true,
+      "retest_after_action": true
+    }
+  ],
+  "evaluation_metrics_required": [
+    "correct_action_rate",
+    "unsafe_action_rate",
+    "policy_violation_rate",
+    "rollback_success_rate",
+    "analyst_acceptance_rate"
+  ]
+}
