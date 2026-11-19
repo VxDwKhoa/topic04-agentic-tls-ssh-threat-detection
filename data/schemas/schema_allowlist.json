@@ -1,0 +1,66 @@
+{
+  "description": "Topic 04 Metadata-Only Allowlist and Denylist Schema (Enforcing No-L7 Payload)",
+  "allowlist": {
+    "L3_L4_flow": [
+      "ts",
+      "uid",
+      "id.orig_h",
+      "id.orig_p",
+      "id.resp_h",
+      "id.resp_p",
+      "proto",
+      "duration",
+      "orig_bytes",
+      "resp_bytes",
+      "conn_state",
+      "orig_pkts",
+      "resp_pkts",
+      "pkt_lengths",
+      "pkt_iat"
+    ],
+    "L5_L6_tls": [
+      "version",
+      "cipher",
+      "curve",
+      "resumed",
+      "established",
+      "ja4",
+      "ja3",
+      "ech_present",
+      "alpn_count"
+    ],
+    "L5_L6_x509": [
+      "cert_chain_len",
+      "is_self_signed",
+      "validity_days",
+      "issuer_class",
+      "key_alg",
+      "key_length",
+      "sig_alg"
+    ],
+    "L5_L6_ssh": [
+      "version",
+      "auth_success",
+      "auth_attempts",
+      "kex_alg",
+      "cipher_alg",
+      "mac_alg",
+      "host_key_alg",
+      "hassh",
+      "ja4ssh"
+    ]
+  },
+  "denylist_strict_no_L7": [
+    "http_body",
+    "http_uri",
+    "http_headers",
+    "http_cookie",
+    "http_authorization",
+    "ssh_commands",
+    "ssh_keystrokes",
+    "decrypted_payload",
+    "session_secrets",
+    "private_keys",
+    "raw_pcap_payload"
+  ]
+}
