@@ -10,3 +10,12 @@ venv/
 *.pem
 .DS_Store
 Thumbs.db
+.pytest_cache/
+.ipynb_checkpoints/
+*.egg-info/
+build/
+dist/
+*.joblib
+*.pt
+*.pth
+Checkpoint/
