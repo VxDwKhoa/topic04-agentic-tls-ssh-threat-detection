@@ -9,6 +9,14 @@ from src.models.isolation_forest import (
     IsolationForestTrainer,
 )
 from src.models.lstm_sequence import LSTMEvaluator, LSTMSequenceModel, LSTMTrainer, PureLSTMNetwork
+from src.models.fusion import (
+    COMPONENT_NAMES,
+    CalibratedFusionModel,
+    FusionEvaluator,
+    MultiModelInferenceBundle,
+    align_lstm_sequence_scores_to_flows,
+    discover_checkpoint_file,
+)
 
 __all__ = [
     "BaseThreatModel",
@@ -26,4 +34,10 @@ __all__ = [
     "LSTMSequenceModel",
     "LSTMTrainer",
     "LSTMEvaluator",
+    "COMPONENT_NAMES",
+    "CalibratedFusionModel",
+    "FusionEvaluator",
+    "MultiModelInferenceBundle",
+    "align_lstm_sequence_scores_to_flows",
+    "discover_checkpoint_file",
 ]
