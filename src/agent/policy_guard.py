@@ -68,6 +68,7 @@ SECRET_VALUE_PATTERNS: Tuple[Tuple[str, re.Pattern[str]], ...] = (
     ("SSLKEYLOGFILE_REF", re.compile(r"\bSSLKEYLOGFILE\b")),
     ("BEARER_TOKEN", re.compile(r"\bBearer\s+[A-Za-z0-9._\-]{10,}")),
     ("OPENAI_STYLE_KEY", re.compile(r"\bsk-[A-Za-z0-9_\-]{12,}\b")),
+    ("GOOGLE_API_KEY", re.compile(r"\bAIza[0-9A-Za-z_\-]{20,}\b")),
     ("INLINE_API_OR_SECRET_KEY", re.compile(r"(?i)\b(?:api_key|secret_key|tls_session_key|private_key)\s*[:=]\s*\S+")),
 )
 

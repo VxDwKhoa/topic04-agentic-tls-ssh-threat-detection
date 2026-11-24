@@ -1,9 +1,12 @@
 """Topic 04 Week 9 Offline-First Threat-Hunting Agent Package."""
 
 from src.agent.llm_interface import (
+    DEFAULT_GEMINI_MODEL,
     BaseNarrativeGenerator,
     CallableLLMNarrativeAdapter,
+    GeminiNarrativeAdapter,
     OfflineTemplateNarrativeGenerator,
+    load_dotenv_file,
 )
 from src.agent.policy_guard import (
     ALLOWED_ASSET_CRITICALITIES,
@@ -34,9 +37,12 @@ __all__ = [
     "PolicyAuditResult",
     "ScopePolicyGuard",
     "ScopePolicyViolationError",
+    "DEFAULT_GEMINI_MODEL",
     "BaseNarrativeGenerator",
     "OfflineTemplateNarrativeGenerator",
     "CallableLLMNarrativeAdapter",
+    "GeminiNarrativeAdapter",
+    "load_dotenv_file",
     "ReadOnlyResponseRecommender",
     "StageTrace",
     "HypothesisCheck",

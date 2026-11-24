@@ -11,3 +11,4 @@ nbconvert>=7.0.0
 ipykernel>=6.0.0
 pytest>=8.0.0
 # Optional (not required for Weeks 5-7 baseline scope): xgboost>=2.0.0
+# Optional (Gemini LLM SOC narrative adapter, offline fallback when unset): google-genai>=3.2.0

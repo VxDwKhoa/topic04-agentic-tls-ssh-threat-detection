@@ -26,6 +26,12 @@ from typing import Any, Dict, List, Optional, Sequence, TextIO
 
 import pandas as pd
 
+from src.agent.llm_interface import (
+    DEFAULT_GEMINI_MODEL,
+    BaseNarrativeGenerator,
+    GeminiNarrativeAdapter,
+    OfflineTemplateNarrativeGenerator,
+)
 from src.agent.policy_guard import (
     ScopePolicyGuard,
 )
@@ -69,12 +75,29 @@ class EndToEndDemoRunner:
         week9_report_path: Optional[Path] = None,
         policy_path: Optional[Path] = None,
         output_stream: Optional[TextIO] = None,
+        llm_provider: str = "offline",
+        llm_model: str = DEFAULT_GEMINI_MODEL,
+        llm_language: str = "vi",
+        narrative_generator: Optional[BaseNarrativeGenerator] = None,
     ) -> None:
         self.repo_root = Path(__file__).resolve().parents[2]
         self.checkpoint_root = checkpoint_root
         self.data_path = data_path
         self.week9_report_path = week9_report_path
         self.policy_guard = ScopePolicyGuard()
+        self.llm_provider = (llm_provider or "offline").strip().lower()
+        self.llm_model = (llm_model or DEFAULT_GEMINI_MODEL).strip()
+        self.llm_language = "en" if str(llm_language).strip().lower() == "en" else "vi"
+        if narrative_generator is not None:
+            self.narrative_generator: BaseNarrativeGenerator = narrative_generator
+        elif self.llm_provider == "gemini":
+            self.narrative_generator = GeminiNarrativeAdapter(
+                model_name=self.llm_model,
+                language=self.llm_language,
+                policy_guard=self.policy_guard,
+            )
+        else:
+            self.narrative_generator = OfflineTemplateNarrativeGenerator()
         self.planner = ResponsePlanner(policy_path=policy_path, policy_guard=self.policy_guard)
         self.gate = HumanApprovalGate(policy_guard=self.policy_guard)
         self.simulator = InMemoryResponseSimulator(policy_guard=self.policy_guard)
@@ -83,7 +106,8 @@ class EndToEndDemoRunner:
         self.out: TextIO = output_stream or sys.stdout
 
     def _emit(self, line: str) -> None:
-        safe_line = line.encode("ascii", errors="replace").decode("ascii")
+        enc = getattr(self.out, "encoding", None) or "utf-8"
+        safe_line = line.encode(enc, errors="replace").decode(enc)
         self.out.write(safe_line + "\n")
 
     def _load_investigations(
@@ -151,7 +175,11 @@ class EndToEndDemoRunner:
             )
 
         adapter = Week8ScoringAdapter.from_checkpoint_root(ckpt_root, device="cpu")
-        agent = ThreatHuntingAgent(scoring_adapter=adapter, policy_guard=self.policy_guard)
+        agent = ThreatHuntingAgent(
+            scoring_adapter=adapter,
+            policy_guard=self.policy_guard,
+            narrative_generator=OfflineTemplateNarrativeGenerator(),
+        )
         results: List[AgentInvestigationResult] = agent.investigate_dataframe(
             df_clean,
             environment=environment,
@@ -258,6 +286,48 @@ class EndToEndDemoRunner:
                 f"  ProposedActions={list(plan.selected_actions)} | "
                 f"PolicyStatus={plan.policy_status}"
             )
+            if self.llm_provider == "gemini":
+                if isinstance(item, AgentInvestigationResult):
+                    triage = item.triage_summary or {}
+                    ctx = {
+                        "incident_id": item.incident_id,
+                        "primary_host_token": triage.get("primary_host_token", plan.target_host_token),
+                        "window_id": triage.get("window_id", 0),
+                        "triage_summary": triage,
+                        "enrichment": item.enrichment,
+                        "verification": item.verification.to_dict(),
+                        "attack_mappings": [
+                            m.to_dict() if hasattr(m, "to_dict") else m for m in item.attack_mappings
+                        ],
+                        "unmapped_rationale": item.unmapped_rationale,
+                        "policy_recommendation": item.policy_recommendation.to_dict(),
+                    }
+                elif isinstance(item, dict):
+                    ctx = {
+                        "incident_id": item.get("incident_id", plan.incident_id),
+                        "primary_host_token": item.get("primary_host_token", plan.target_host_token),
+                        "window_id": item.get("window_id", 0),
+                        "triage_summary": item.get("triage_summary", {}),
+                        "enrichment": item.get("enrichment", {}),
+                        "verification": item.get("verification", {}),
+                        "attack_mappings": item.get("attack_mappings", []),
+                        "unmapped_rationale": item.get("unmapped_rationale"),
+                        "policy_recommendation": item.get("policy_recommendation", {}),
+                    }
+                else:
+                    ctx = None
+                narr_meta = self.narrative_generator.generate(ctx) if ctx is not None else {}
+                narr_text = str(narr_meta.get("narrative", ""))
+                if narr_text:
+                    prov = narr_meta.get("provider", self.llm_provider)
+                    mdl = narr_meta.get("model", self.llm_model)
+                    fb_tag = " [FALLBACK_OFFLINE]" if narr_meta.get("fallback_used") else ""
+                    self._emit(f"  [AI ANALYST BRIEFING | {prov}:{mdl}{fb_tag}]")
+                    if narr_meta.get("fallback_used") and narr_meta.get("fallback_reason"):
+                        self._emit(f"    (fallback_reason: {narr_meta['fallback_reason']})")
+                    for nline in narr_text.splitlines():
+                        if nline.strip():
+                            self._emit(f"    {nline.strip()}")
 
             approval_obj: Optional[ApprovalDecision] = None
             do_manual_rollback = simulate_rollback
@@ -611,6 +681,23 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default=None,
         help="Optional path to save demo summary JSON.",
     )
+    parser.add_argument(
+        "--llm-provider",
+        choices=("offline", "gemini"),
+        default="offline",
+        help="Stage 5 narrative provider: 'offline' (default) or 'gemini' (guardrailed, reads GEMINI_API_KEY).",
+    )
+    parser.add_argument(
+        "--llm-model",
+        default=DEFAULT_GEMINI_MODEL,
+        help=f"Gemini model ID when --llm-provider gemini is used (default: {DEFAULT_GEMINI_MODEL}).",
+    )
+    parser.add_argument(
+        "--llm-language",
+        choices=("vi", "en"),
+        default="vi",
+        help="Briefing language for Gemini SOC explanation (default: vi).",
+    )
     return parser
 
 
@@ -622,6 +709,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         checkpoint_root=args.checkpoint_root,
         data_path=args.data_path,
         week9_report_path=args.week9_report,
+        llm_provider=args.llm_provider,
+        llm_model=args.llm_model,
+        llm_language=args.llm_language,
     )
     runner.run(
         interactive=interactive,
